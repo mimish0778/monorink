@@ -4,6 +4,9 @@
 本作は、ローカル対戦専用の2人用エアホッケーゲームです。  \
 シンプルな操作ながら、カーブショットによる駆け引きが特徴です。\
 \
+<img width="1451" height="807" alt="playImage" src="https://github.com/user-attachments/assets/aea4ab98-7e26-4a0e-824c-497c786486f5" />
+
+
 ジャンル：対戦型エアホッケーゲーム\
 プレイ人数：２人\
 
