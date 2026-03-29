@@ -7,7 +7,7 @@ using TMPro;
 public class PuckBlackController : MonoBehaviour
 {
     private const float TransitionEnableDelay = 5f;
-    private const float MaxSpeed = 19f;
+    private const float MaxSpeed = 15f;
     private const float MinSpeed = 5f;
     private const float MoveDelay = 0.8f;
     private const float BendDelay = 0.5f;
