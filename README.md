@@ -76,3 +76,5 @@ Assets/Project/
 ソースコードは [MIT License](LICENSE) で公開しています。
 
 同梱のフォント [Caveat](https://fonts.google.com/specimen/Caveat) には SIL Open Font License 1.1 が適用されます。
+
+効果音（`Assets/Project/Audios/`）はフリー素材を使用しており、このライセンスの対象外です。
