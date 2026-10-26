@@ -51,10 +51,6 @@
 
 シーンは Start（タイトル）と Play（対戦）の 2 つで、この順にビルド設定に登録されています。
 
-### WebGL ビルド
-
-`WebGLRelease/` には WebGL 向けのビルドが含まれています。ファイルは gzip で圧縮されており、展開のフォールバックを無効にしてビルドしているため、配信するサーバーが `.gz` ファイルに `Content-Encoding: gzip` ヘッダーを付ける必要があります。`index.html` を直接開いても起動しません。
-
 ## プロジェクト構成
 
 ```
@@ -77,4 +73,6 @@ Assets/Project/
 
 ## ライセンス
 
-[MIT License](LICENSE)
+ソースコードは [MIT License](LICENSE) で公開しています。
+
+同梱のフォント [Caveat](https://fonts.google.com/specimen/Caveat) には SIL Open Font License 1.1 が適用されます。
