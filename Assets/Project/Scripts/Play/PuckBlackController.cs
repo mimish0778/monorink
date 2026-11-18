@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -40,7 +39,7 @@ public class PuckBlackController : MonoBehaviour
         initialPosition = transform.position;
 
         StartCoroutine(fade.FadeIn());
-        StartCoroutine(Reset());
+        StartCoroutine(ResetPuck());
     }
 
     private void Update()
@@ -71,7 +70,6 @@ public class PuckBlackController : MonoBehaviour
         if (col.gameObject.CompareTag("Player"))
         {
             var player = col.gameObject.GetComponent<PlayerControllerBase>();
-            Rigidbody2D playerRb = col.gameObject.GetComponent<Rigidbody2D>();
 
             if (player.IsTricking && bendCoroutine == null && 0 < player.Energy && player.MoveInput != 0)
             {
@@ -82,42 +80,38 @@ public class PuckBlackController : MonoBehaviour
 
         if (!isGameOver)
         {
+            // 赤のゴールに入ったら青の得点、青のゴールに入ったら赤の得点
             if (col.gameObject.CompareTag("GoalRed"))
             {
-                StartCoroutine(Reset());
-                scoreLampBlueOff[scoreBlue].SetActive(false);
-                scoreLampBlueOn[scoreBlue].SetActive(true);
-                audioSource.PlayOneShot(goalSound);
-                scoreBlue++;
-
-                if (ScoreToWin <= scoreBlue)
-                {
-                    isGameOver = true;
-                    resultBlueMessage.text = "Win";
-                    resultRedMessage.text = "Lose";
-                    StartCoroutine(WaitForTransitionEnable());
-                }
+                scoreBlue = AddScore(scoreBlue, scoreLampBlueOn, scoreLampBlueOff, resultBlueMessage, resultRedMessage);
             }
             if (col.gameObject.CompareTag("GoalBlue"))
             {
-                StartCoroutine(Reset());
-                scoreLampRedOff[scoreRed].SetActive(false);
-                scoreLampRedOn[scoreRed].SetActive(true);
-                audioSource.PlayOneShot(goalSound);
-                scoreRed++;
-
-                if (ScoreToWin <= scoreRed)
-                {
-                    isGameOver = true;
-                    resultRedMessage.text = "Win";
-                    resultBlueMessage.text = "Lose";
-                    StartCoroutine(WaitForTransitionEnable());
-                }
+                scoreRed = AddScore(scoreRed, scoreLampRedOn, scoreLampRedOff, resultRedMessage, resultBlueMessage);
             }
         }
     }
 
-    private IEnumerator Reset()
+    // 得点を 1 加えてランプを点け、規定点に達したら勝敗を表示する。加算後の得点を返す
+    private int AddScore(int score, GameObject[] lampOn, GameObject[] lampOff, TMP_Text winnerMessage, TMP_Text loserMessage)
+    {
+        StartCoroutine(ResetPuck());
+        lampOff[score].SetActive(false);
+        lampOn[score].SetActive(true);
+        audioSource.PlayOneShot(goalSound);
+        score++;
+
+        if (ScoreToWin <= score)
+        {
+            isGameOver = true;
+            winnerMessage.text = "Win";
+            loserMessage.text = "Lose";
+            StartCoroutine(WaitForTransitionEnable());
+        }
+        return score;
+    }
+
+    private IEnumerator ResetPuck()
     {
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0f;
