@@ -2,7 +2,7 @@
 
 1 台のキーボードで 2 人が対戦する、ローカル対戦用のエアホッケーゲームです。Unity で制作しました。
 
-<img width="1451" height="807" alt="Mono Rink のプレイ画面" src="https://github.com/user-attachments/assets/aea4ab98-7e26-4a0e-824c-497c786486f5" />
+![Mono Rink のプレイ画面](docs/screenshot.png)
 
 **unityroom でプレイ:** https://unityroom.com/games/monorink
 
