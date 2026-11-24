@@ -1,5 +1,7 @@
 # Mono Rink
 
+[![test](https://github.com/mimish0778/monorink/actions/workflows/test.yml/badge.svg)](https://github.com/mimish0778/monorink/actions/workflows/test.yml)
+
 1 台のキーボードで 2 人が対戦する、ローカル対戦用のエアホッケーゲームです。Unity で制作しました。
 
 ![Mono Rink のプレイ画面](docs/screenshot.png)
@@ -64,12 +66,29 @@ Assets/Project/
     ├── Start/
     │   ├── PuckWhiteController.cs  タイトル画面の演出と、対戦画面への遷移
     │   └── StartPromptController.cs 「Press Start」の点滅
-    └── Play/
-        ├── PlayerControllerBase.cs パドルの移動・回転と、カーブショットの残り回数
-        ├── PlayerRedController.cs  Player Red のキー割り当て
-        ├── PlayerBlueController.cs Player Blue のキー割り当て
-        └── PuckBlackController.cs  パックの挙動、得点、勝敗判定
+    ├── Play/
+    │   ├── PlayerControllerBase.cs パドルの移動・回転と、カーブショットの残り回数
+    │   ├── PlayerRedController.cs  Player Red のキー割り当て
+    │   ├── PlayerBlueController.cs Player Blue のキー割り当て
+    │   └── PuckBlackController.cs  パックの挙動、得点、勝敗判定
+    └── Rules/
+        ├── PuckRules.cs            パックの速さの上限・下限、カーブショット、得点と勝敗のルール
+        └── PaddleInput.cs          キー入力をパドルの移動・回転の向きに変換
+tests/
+└── MonoRink.Tests/                 Rules/ のユニットテスト（NUnit）
 ```
+
+## テスト
+
+パックの速さの制限、カーブショットを打てる条件と曲がる力、ゴールと得点の対応、勝敗、同時押ししたキーの扱いといったルールを `Assets/Project/Scripts/Rules/` に切り出し、NUnit でテストしています。
+
+これらのファイルは UnityEngine に依存しないため、Unity エディタやライセンスがなくても .NET SDK だけで実行できます。テストプロジェクトは `Assets/` 以下のファイルを直接コンパイルするので、ルールに UnityEngine への依存が入るとビルドが失敗して気づけます。
+
+```bash
+dotnet test tests/MonoRink.Tests
+```
+
+.NET 8 SDK が必要です。GitHub Actions でも push と pull request のたびに実行しています。
 
 ## ライセンス
 

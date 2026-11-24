@@ -36,26 +36,10 @@ public class PlayerControllerBase : MonoBehaviour
 
     protected virtual void Update()
     {
-        moveInput = 0f;
-        rotateInput = 0f;
         isTricking = Input.GetKey(trickKey);
-
-        if (Input.GetKey(moveUpKey) && !Input.GetKey(moveDownKey))
-        {
-            moveInput = 1f;
-        }
-        if (Input.GetKey(moveDownKey) && !Input.GetKey(moveUpKey))
-        {
-            moveInput = -1f;
-        }
-        if (Input.GetKey(rotateRightKey) && !Input.GetKey(rotateLeftKey))
-        {
-            rotateInput = -1f;
-        }
-        if (Input.GetKey(rotateLeftKey) && !Input.GetKey(rotateRightKey))
-        {
-            rotateInput = 1f;
-        }
+        moveInput = PaddleInput.ResolveAxis(Input.GetKey(moveUpKey), Input.GetKey(moveDownKey));
+        // 右回転は時計回り（角速度がマイナス）
+        rotateInput = PaddleInput.ResolveAxis(Input.GetKey(rotateLeftKey), Input.GetKey(rotateRightKey));
     }
 
     protected virtual void FixedUpdate()

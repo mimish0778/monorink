@@ -6,12 +6,8 @@ using TMPro;
 public class PuckBlackController : MonoBehaviour
 {
     private const float TransitionEnableDelay = 5f;
-    private const float MaxSpeed = 15f;
-    private const float MinSpeed = 5f;
     private const float MoveDelay = 0.8f;
     private const float BendDelay = 0.5f;
-    private const float BendCoef = 1f;
-    private const int ScoreToWin = 9;
 
     private Rigidbody2D rb;
     private AudioSource audioSource;
@@ -53,13 +49,11 @@ public class PuckBlackController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (MaxSpeed < rb.velocity.magnitude)
+        float speed = rb.velocity.magnitude;
+        float clamped = PuckRules.ClampSpeed(speed);
+        if (clamped != speed)
         {
-            rb.velocity = rb.velocity.normalized * MaxSpeed;
-        }
-        if (rb.velocity.magnitude < MinSpeed)
-        {
-            rb.velocity = rb.velocity.normalized * MinSpeed;
+            rb.velocity = rb.velocity.normalized * clamped;
         }
     }
 
@@ -71,7 +65,7 @@ public class PuckBlackController : MonoBehaviour
         {
             var player = col.gameObject.GetComponent<PlayerControllerBase>();
 
-            if (player.IsTricking && bendCoroutine == null && 0 < player.Energy && player.MoveInput != 0)
+            if (PuckRules.CanBend(player.IsTricking, bendCoroutine != null, player.Energy, player.MoveInput))
             {
                 player.DecreaseEnergy();
                 bendCoroutine = StartCoroutine(Bend(player.MoveInput));
@@ -81,11 +75,12 @@ public class PuckBlackController : MonoBehaviour
         if (!isGameOver)
         {
             // 赤のゴールに入ったら青の得点、青のゴールに入ったら赤の得点
-            if (col.gameObject.CompareTag("GoalRed"))
+            Side? scorer = PuckRules.ScorerForGoal(col.gameObject.tag);
+            if (scorer == Side.Blue)
             {
                 scoreBlue = AddScore(scoreBlue, scoreLampBlueOn, scoreLampBlueOff, resultBlueMessage, resultRedMessage);
             }
-            if (col.gameObject.CompareTag("GoalBlue"))
+            else if (scorer == Side.Red)
             {
                 scoreRed = AddScore(scoreRed, scoreLampRedOn, scoreLampRedOff, resultRedMessage, resultBlueMessage);
             }
@@ -101,7 +96,7 @@ public class PuckBlackController : MonoBehaviour
         audioSource.PlayOneShot(goalSound);
         score++;
 
-        if (ScoreToWin <= score)
+        if (PuckRules.HasWon(score))
         {
             isGameOver = true;
             winnerMessage.text = "Win";
@@ -123,14 +118,14 @@ public class PuckBlackController : MonoBehaviour
         }
         yield return new WaitForSeconds(MoveDelay);
 
-        rb.velocity = new Vector2(Random.Range(0, 2) == 0 ? -MinSpeed : MinSpeed, 0);
+        rb.velocity = new Vector2(Random.Range(0, 2) == 0 ? -PuckRules.MinSpeed : PuckRules.MinSpeed, 0);
     }
 
     private IEnumerator Bend(float bendDirection)
     {
         yield return new WaitForSeconds(BendDelay);
 
-        Vector2 force = new Vector2(0, bendDirection * BendCoef * rb.velocity.magnitude);
+        Vector2 force = new Vector2(0, PuckRules.BendImpulse(bendDirection, rb.velocity.magnitude));
         rb.AddForce(force, ForceMode2D.Impulse);
 
         bendCoroutine = null;
